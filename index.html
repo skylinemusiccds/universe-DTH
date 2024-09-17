@@ -48,6 +48,8 @@
             z-index: 20;
             display: flex;
             gap: 20px;
+            opacity: 0; /* Hidden by default */
+            transition: opacity 0.3s ease;
         }
         #controls button {
             background-color: rgba(255, 255, 255, 0.3);
@@ -78,6 +80,7 @@
         let channels = [];
         let currentIndex = 0;
         let channelTimeout;
+        let controlsTimeout;
 
         // Fetch the JSON data from the URL
         fetch('https://raw.githubusercontent.com/skylinemusiccds/tataplay_urls/main/origin.json')
@@ -134,7 +137,7 @@
             const channelName = document.getElementById('channel-name');
 
             // Show the channel logo
-            logo.src = channel.channel_logo;
+            logo.src = "https://mediaready.videoready.tv/tatasky-epg/image/fetch/f_auto,fl_lossy,q_auto,h_250,w_250"+channel.channel_logo;
             logo.style.display = 'block';
             channelName.textContent = channel.channel_name;
 
@@ -202,6 +205,19 @@
                 console.error('Failed to get DRM keys.');
             }
         }
+
+        // Show controls on mouse move and hide them after 3 seconds of inactivity
+        let hideControls = () => {
+            document.getElementById('controls').style.opacity = '0';
+        };
+
+        document.addEventListener('mousemove', () => {
+            document.getElementById('controls').style.opacity = '1';
+            if (controlsTimeout) {
+                clearTimeout(controlsTimeout);
+            }
+            controlsTimeout = setTimeout(hideControls, 3000); // Hide after 3 seconds of no mouse movement
+        });
     </script>
 </body>
 </html>
